@@ -16,17 +16,22 @@ School::~School() {
 
 void School::loadStudents(const std::string& filename) {
     std::ifstream file(filename);
-    std::string line;
+    if (!file.is_open()) {
+        std::cerr << "Error reading student file name\n";
+        return;
+    }
 
+    std::string line;
     while (std::getline(file, line)) {
         std::stringstream ss(line);
         std::string lastName, firstName, studentID;
 
+        // Read student info
         std::getline(ss, lastName, ',');
         std::getline(ss, firstName, ',');
         std::getline(ss, studentID, ',');
 
-        // Resize student array if needed
+        // Resize student array if necessary
         if (numStudents % 10 == 0) {
             Student* newStudents = new Student[numStudents + 10];
             for (int i = 0; i < numStudents; ++i) {
@@ -43,11 +48,16 @@ void School::loadStudents(const std::string& filename) {
 
 void School::loadCourses(const std::string& filename) {
     std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error reading course file name\n";
+        return;
+    }
+
     std::string courseName;
     int creditHours, maxEnrollment;
 
     while (file >> courseName >> creditHours >> maxEnrollment) {
-        // Resize course array if needed
+        // Resize course array if necessary
         if (numCourses % 10 == 0) {
             Course* newCourses = new Course[numCourses + 10];
             for (int i = 0; i < numCourses; ++i) {
@@ -109,7 +119,6 @@ void School::displayAllData() const {
     for (int i = 0; i < numCourses; ++i) {
         std::cout << "Course Roster: " << courses[i].getName() << "\n";
         std::cout << "========================================\n";
-
         const std::string* roster = courses[i].getRoster();
         int enrolled = courses[i].getCurrentEnrollment();
 
